@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <form [formGroup]="formDados">
     <div class="input-group mb-3">
-      <input type="text" class="form-control" formControlName="addWord" placeholder="Digite uma palavra" aria-label="Recipient's username" aria-describedby="button-addon2">
+      <input type="text" class="form-control" formControlName="addWord" placeholder="Digite uma palavra">
       <div class="input-group-append">
         <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="adicionarPalavra()">Adicionar</button>
       </div>
@@ -11,10 +11,7 @@
       <label *ngFor="let palavra of palavras">{{palavra}}&nbsp;</label>
     </div>
     <div class="input-group mb-3">
-      <input type="text" class="form-control" formControlName="verifyWord" placeholder="Verificar" aria-label="Recipient's username" aria-describedby="button-addon2">
-      <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="button" id="button-addon2">Verificar</button>
-      </div>
+      <input type="text" class="form-control" (keydown)="onKeydown($event)" formControlName="verifyWord" placeholder="Verificar" spellcheck="false">
     </div>
   </form>
   

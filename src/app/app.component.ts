@@ -10,6 +10,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class AppComponent {
   title = 'app-automato';
 
+  private auxPalavra = [];
   private formDados: FormGroup;
   private palavras = [];
   private dicionario = [];
@@ -72,6 +73,22 @@ export class AppComponent {
         }
       });
     }
+  }
+
+  onKeydown(event) {
+    if (event.key === "Backspace") {
+      this.auxPalavra.pop();
+    } else {
+      this.auxPalavra.push(event.key);
+      var proximo = this.proximoEstado(this.auxPalavra.length-1, event.key);
+      if (!proximo) alert('Palavra não existente!')
+    }
+  }
+
+  proximoEstado(estadoAtual, letra) {
+    var novoEstado = this.dicionario[estadoAtual][letra];
+    console.log('Estado Atual: ' + estadoAtual + '\n' + 'Letra: ' + letra + '\n' + 'Novo Estado: ' +novoEstado )
+    return novoEstado;
   }
 
 }
