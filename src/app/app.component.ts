@@ -87,7 +87,7 @@ export class AppComponent {
 
   proximoEstado(estadoAtual, letra) {
     var novoEstado = this.dicionario[estadoAtual][letra];
-    console.log('Estado Atual: ' + estadoAtual + '\n' + 'Letra: ' + letra + '\n' + 'Novo Estado: ' +novoEstado )
+    console.log('setColor -> row: ' + estadoAtual + ' - col: ' + (this.headerTable.findIndex((item) => {return (item.replace(' ', '')==letra.toUpperCase())})));
     return novoEstado;
   }
 
