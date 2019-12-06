@@ -42,12 +42,49 @@ export class AppComponent {
     return estado;
   }
 
+  temEspacos(palavra): any {
+    if (palavra.indexOf(" ")==-1) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  temNumeros(palavra): any {
+    var regExp = /[0-9]/g;
+    var result = palavra.match(regExp);
+    if (result) { //tem numero
+      return true;
+    } 
+    return false;
+  }
+  
+  validarPalavra(palavra) {
+    if (palavra.length) {
+      if (!this.temEspacos(palavra)) {
+        if (!this.temNumeros(palavra)) {
+          this.palavras.push(palavra);
+          this.formDados.reset();
+          this.gerarAutomato(palavra);
+        } else {
+          alert("A palavra não deve conter números!");
+        }
+      } else {
+        alert("A palavra não deve conter espaços!");
+      }
+    } else {
+      alert("A palavra não deve ser em branco!");
+      return false;
+    }
+  }
+
   adicionarPalavra() {
     var palavra = this.formDados.get('addWord').value;
-    if (palavra!="") {
-      this.palavras.push(palavra);
-      this.formDados.reset();
-      this.gerarAutomato(palavra);
+    palavra = palavra.toLowerCase()
+    if (palavra) {
+      this.validarPalavra(palavra);
+    } else {
+      alert('Palavra não pode ser em branco');
     }
   }
 
