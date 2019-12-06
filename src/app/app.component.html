@@ -23,7 +23,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let lineBody of dicionario; let index=index;">
-          <th ngClass="lineBody.cor" scope="row">{{index}}</th>
+          <th ngClass="lineBody.cor" scope="row">q{{index}}<span *ngIf="lineBody.isFinal">*</span></th>
           <td ngClass="{{lineBody.a.cor}}">{{lineBody.a.estado}}</td>
           <td ngClass="{{lineBody.b.cor}}">{{lineBody.b.estado}}</td>
           <td ngClass="{{lineBody.c.cor}}">{{lineBody.c.estado}}</td>

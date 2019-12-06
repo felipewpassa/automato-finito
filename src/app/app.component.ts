@@ -23,6 +23,7 @@ export class AppComponent {
   private testeClass = {"color": "red"};
   private auxColorEstadoAnterior;
   private auxColorLetraAnterior;
+  private countQ = 0;
 
   constructor(private formBuilder: FormBuilder) {
     this.formDados = this.formBuilder.group({
@@ -34,11 +35,34 @@ export class AppComponent {
   criarNovoEstado() {
     // 'a': {'estado: 'q1', 'cor': ''}
     let estado = {
-      'a': {'estado': '', 'cor': ''},'b': {'estado': '', 'cor': ''},'c': {'estado': '', 'cor': ''},'d': {'estado': '', 'cor': ''},'e': {'estado': '', 'cor': ''},'f': {'estado': '', 'cor': ''},
-      'g': {'estado': '', 'cor': ''},'h': {'estado': '', 'cor': ''},'i': {'estado': '', 'cor': ''},'j': {'estado': '', 'cor': ''},'k': {'estado': '', 'cor': ''},'l': {'estado': '', 'cor': ''},
-      'm': {'estado': '', 'cor': ''},'n': {'estado': '', 'cor': ''},'o': {'estado': '', 'cor': ''},'p': {'estado': '', 'cor': ''},'q': {'estado': '', 'cor': ''},'r': {'estado': '', 'cor': ''},
-      's': {'estado': '', 'cor': ''},'t': {'estado': '', 'cor': ''},'u': {'estado': '', 'cor': ''},'v': {'estado': '', 'cor': ''},'w': {'estado': '', 'cor': ''},'x': {'estado': '', 'cor': ''},
-      'y': {'estado': '', 'cor': ''},'z': {'estado': '', 'cor': ''}, 'cor': ''}
+      'a': {'estado': '', 'cor': ''},
+      'b': {'estado': '', 'cor': ''},
+      'c': {'estado': '', 'cor': ''},
+      'd': {'estado': '', 'cor': ''},
+      'e': {'estado': '', 'cor': ''},
+      'f': {'estado': '', 'cor': ''},
+      'g': {'estado': '', 'cor': ''},
+      'h': {'estado': '', 'cor': ''},
+      'i': {'estado': '', 'cor': ''},
+      'j': {'estado': '', 'cor': ''},
+      'k': {'estado': '', 'cor': ''},
+      'l': {'estado': '', 'cor': ''},
+      'm': {'estado': '', 'cor': ''},
+      'n': {'estado': '', 'cor': ''},
+      'o': {'estado': '', 'cor': ''},
+      'p': {'estado': '', 'cor': ''},
+      'q': {'estado': '', 'cor': ''},
+      'r': {'estado': '', 'cor': ''},
+      's': {'estado': '', 'cor': ''},
+      't': {'estado': '', 'cor': ''},
+      'u': {'estado': '', 'cor': ''},
+      'v': {'estado': '', 'cor': ''},
+      'w': {'estado': '', 'cor': ''},
+      'x': {'estado': '', 'cor': ''},
+      'y': {'estado': '', 'cor': ''},
+      'z': {'estado': '', 'cor': ''}, 
+      'isFinal': false
+    }
     return estado;
   }
 
@@ -88,12 +112,63 @@ export class AppComponent {
     }
   }
 
-  estadoJaExiste(index) {
+  /*estadoJaExiste(index) {
     return ((index).toString() > (this.dicionario.length-1))
+  }*/
+
+  estadoExiste(index) {
+    return this.dicionario.length > index;
+  }
+
+  QExiste(index, letra) {
+    return (this.dicionario[index][letra].estado)
+  }
+
+  addEstadoFinal(index) {
+    let novoEstado = this.criarNovoEstado();
+    novoEstado.isFinal=true;
+    this.dicionario.push(novoEstado);
+    for(var i='a'.charCodeAt(0); i<='z'.charCodeAt(0); i++) {
+      this.dicionario[index][String.fromCharCode(i)].estado = '-';
+    }
   }
 
   gerarAutomato(palavra) {
-    if (!this.dicionario.length) {
+    var auxEstadoQ = '';
+    var palavra = palavra.split('');
+      palavra.forEach((letra, index) => {
+        this.countQ+=1;
+        if (this.estadoExiste(index)) {
+          if (index == 0) {
+            console.log((this.dicionario.length) + ' letra -> ' + letra +  ' -> index' + index + ' ->' + this.countQ)
+            this.dicionario[index][letra].estado = 'q' + (this.countQ).toString();
+          } else {
+            console.log("Tamanho -> " + this.dicionario.length)
+            let novoEstado = this.criarNovoEstado();
+            novoEstado[letra].estado = 'q' + (this.countQ).toString();
+            this.dicionario.push(novoEstado);
+          }
+          //verifica se a letra tem um Q
+          //sim -> ve para onde aponta e vai la
+          //não -> adiciona Q
+          /*if (this.QExiste(index, letra)) {
+            //auxEstadoQ = this.QExiste(index, letra);
+            console.log("Todo FUdido" + index)
+          } else {
+            
+            console.log("NAO TEM PORRA NENHUMA")
+          }*/
+        } else {
+          //dicionario length menor que a palavra
+          let novoEstado = this.criarNovoEstado();
+          novoEstado[letra].estado = 'q' + (this.countQ).toString();
+          this.dicionario.push(novoEstado);
+        }
+      });
+      //Adiciona um estado final apos a inserção de cada palavra
+      this.addEstadoFinal(this.countQ);
+      
+    /*if (!this.dicionario.length) {
       var palavra = palavra.split('');
       palavra.forEach((letra, index) => {
         let estado = this.criarNovoEstado();
@@ -113,7 +188,7 @@ export class AppComponent {
           this.dicionario[index][letra].estado = 'q' + (index+1).toString();
         }
       });
-    }
+    }*/
   }
 
   onKeydown(event) {
