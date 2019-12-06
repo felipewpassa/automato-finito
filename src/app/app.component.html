@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container mt-4" style="min-width: 780px;">
   <form [formGroup]="formDados">
     <div class="input-group mb-3">
       <input type="text" class="form-control" formControlName="addWord" placeholder="Digite uma palavra" spellcheck="false" (keydown)="addWithEnter($event)">
@@ -6,16 +6,23 @@
         <button class="btn btn-outline-primary" type="button" (click)="adicionarPalavra()">Adicionar</button>
       </div>
     </div>
-    <div>
-      <label>Dicionário:&nbsp;</label>
-      <label *ngFor="let palavra of palavras; let i=index">{{!i ? palavra : ',&nbsp;' + palavra}}</label>
+    <div class="card mb-3" *ngIf="this.dicionario.length">
+      <div class="card-body">
+        <h6 style="font-size: 15px;" class="card-title">Dicionário</h6>
+        <label style="font-size: 15px;" *ngFor="let palavra of palavras; let i=index">{{!i ? palavra : ',&nbsp;' + palavra}}</label>
+      </div>
     </div>
+    <!--div>
+      <div class="card" style="width: 18rem;">
+        <label>Dicionário:&nbsp;</label>
+        <label *ngFor="let palavra of palavras; let i=index">{{!i ? palavra : ',&nbsp;' + palavra}}</label>
+      </div>
+    </div-->
     <div class="input-group mb-3" *ngIf="this.dicionario.length">
       <input type="text" class="form-control input-mask" [style.color]=inputColor (keydown)="onKeydown($event)" formControlName="verifyWord" placeholder="Verificar" spellcheck="false">
     </div>
   </form>
-
-  <table class="table table-sm table-bordered table-light">    
+  <table class="table table-sm table-bordered table-light" *ngIf="this.dicionario.length">    
     <thead>
       <tr>
         <th *ngFor="let head of headerTable" scope="col">{{head}}</th>
@@ -53,6 +60,11 @@
       </tr>
     </tbody>
   </table>
+  <!--div class="card mb-3">
+    <div class="card-body">
+      <p class="card-text" style="text-align: center;">Felipe Passa</p>
+    </div>
+  </div-->
 </div>
 
 <router-outlet></router-outlet>
