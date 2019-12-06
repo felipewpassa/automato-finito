@@ -14,7 +14,7 @@
       <input type="text" class="form-control" (keydown)="onKeydown($event)" formControlName="verifyWord" placeholder="Verificar" spellcheck="false">
     </div>
   </form>
-  
+
   <table class="table table-sm table-bordered table-light">    
     <thead>
       <tr>
@@ -23,33 +23,33 @@
     </thead>
     <tbody>
       <tr *ngFor="let lineBody of dicionario; let index=index;">
-          <th scope="row">{{index}}</th>
-          <td>{{lineBody.a}}</td>
-          <td>{{lineBody.b}}</td>
-          <td>{{lineBody.c}}</td>
-          <td>{{lineBody.d}}</td>
-          <td>{{lineBody.e}}</td>
-          <td>{{lineBody.f}}</td>
-          <td>{{lineBody.g}}</td>
-          <td>{{lineBody.h}}</td>
-          <td>{{lineBody.i}}</td>
-          <td>{{lineBody.j}}</td>
-          <td>{{lineBody.k}}</td>
-          <td>{{lineBody.l}}</td>
-          <td>{{lineBody.m}}</td>
-          <td>{{lineBody.n}}</td>
-          <td>{{lineBody.o}}</td>
-          <td>{{lineBody.p}}</td>
-          <td>{{lineBody.q}}</td>
-          <td>{{lineBody.r}}</td>
-          <td>{{lineBody.s}}</td>
-          <td>{{lineBody.t}}</td>
-          <td>{{lineBody.u}}</td>
-          <td>{{lineBody.v}}</td>
-          <td>{{lineBody.w}}</td>
-          <td>{{lineBody.x}}</td>
-          <td>{{lineBody.y}}</td>
-          <td>{{lineBody.z}}</td>
+          <th ngClass="lineBody.cor" scope="row">{{index}}</th>
+          <td ngClass="{{lineBody.a.cor}}">{{lineBody.a.estado}}</td>
+          <td ngClass="{{lineBody.b.cor}}">{{lineBody.b.estado}}</td>
+          <td ngClass="{{lineBody.c.cor}}">{{lineBody.c.estado}}</td>
+          <td ngClass="{{lineBody.d.cor}}">{{lineBody.d.estado}}</td>
+          <td ngClass="{{lineBody.e.cor}}">{{lineBody.e.estado}}</td>
+          <td ngClass="{{lineBody.f.cor}}">{{lineBody.f.estado}}</td>
+          <td ngClass="{{lineBody.g.cor}}">{{lineBody.g.estado}}</td>
+          <td ngClass="{{lineBody.h.cor}}">{{lineBody.h.estado}}</td>
+          <td ngClass="{{lineBody.i.cor}}">{{lineBody.i.estado}}</td>
+          <td ngClass="{{lineBody.j.cor}}">{{lineBody.j.estado}}</td>
+          <td ngClass="{{lineBody.k.cor}}">{{lineBody.k.estado}}</td>
+          <td ngClass="{{lineBody.l.cor}}">{{lineBody.l.estado}}</td>
+          <td ngClass="{{lineBody.m.cor}}">{{lineBody.m.estado}}</td>
+          <td ngClass="{{lineBody.n.cor}}">{{lineBody.n.estado}}</td>
+          <td ngClass="{{lineBody.o.cor}}">{{lineBody.o.estado}}</td>
+          <td ngClass="{{lineBody.p.cor}}">{{lineBody.p.estado}}</td>
+          <td ngClass="{{lineBody.q.cor}}">{{lineBody.q.estado}}</td>
+          <td ngClass="{{lineBody.r.cor}}">{{lineBody.r.estado}}</td>
+          <td ngClass="{{lineBody.s.cor}}">{{lineBody.s.estado}}</td>
+          <td ngClass="{{lineBody.t.cor}}">{{lineBody.t.estado}}</td>
+          <td ngClass="{{lineBody.u.cor}}">{{lineBody.u.estado}}</td>
+          <td ngClass="{{lineBody.v.cor}}">{{lineBody.v.estado}}</td>
+          <td ngClass="{{lineBody.w.cor}}">{{lineBody.w.estado}}</td>
+          <td ngClass="{{lineBody.x.cor}}">{{lineBody.x.estado}}</td>
+          <td ngClass="{{lineBody.y.cor}}">{{lineBody.y.estado}}</td>
+          <td ngClass="{{lineBody.z.cor}}">{{lineBody.z.estado}}</td>
       </tr>
     </tbody>
   </table>
