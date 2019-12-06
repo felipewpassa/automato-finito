@@ -26,7 +26,13 @@ export class AppComponent {
   private auxColorEstadoAnterior;
   private auxColorLetraAnterior;
   private countQ = 0;
-  private palavraCorreta;
+  private palavraCorreta = true;
+  private exibirMsg = false;
+
+  private exibirMsgCustom = false;
+  private msgCustom = "";
+  private msgClass = "";
+ 
 
   constructor(private formBuilder: FormBuilder) {
     this.formDados = this.formBuilder.group({
@@ -90,17 +96,26 @@ export class AppComponent {
     if (palavra.length) {
       if (!this.temEspacos(palavra)) {
         if (!this.temNumeros(palavra)) {
-          this.palavras.push(palavra);
-          this.formDados.reset();
-          this.gerarAutomato(palavra);
+          var jaPossui = false;
+          this.palavras.forEach((palavraAramazenda) => {
+            if (palavra == palavraAramazenda) jaPossui = true;
+          })
+          if (!jaPossui) {
+            this.palavras.push(palavra);
+            this.formDados.reset();
+            this.gerarAutomato(palavra);
+          } else {
+            this.alert("A palavra já está cadastrada", 'red');
+            this.limparCampoVerify();
+          }
         } else {
-          alert("A palavra não deve conter números!");
+          this.alert("A palavra não deve conter números!", 'red');
         }
       } else {
-        alert("A palavra não deve conter espaços!");
+        this.alert("A palavra não deve conter espaços!", 'red');
       }
     } else {
-      alert("A palavra não deve ser em branco!");
+      this.alert("A palavra não deve ser em branco!", 'red');
       return false;
     }
   }
@@ -114,10 +129,6 @@ export class AppComponent {
       alert('Palavra não pode ser em branco');
     }
   }
-
-  /*estadoJaExiste(index) {
-    return ((index).toString() > (this.dicionario.length-1))
-  }*/
 
   estadoExiste(index) {
     return this.dicionario.length > index;
@@ -139,59 +150,26 @@ export class AppComponent {
   gerarAutomato(palavra) {
     var auxEstadoQ = '';
     var palavra = palavra.split('');
-      palavra.forEach((letra, index) => {
-        this.countQ+=1;
-        if (this.estadoExiste(index)) {
-          if (index == 0) {
-            console.log((this.dicionario.length) + ' letra -> ' + letra +  ' -> index' + index + ' ->' + this.countQ)
-            this.dicionario[index][letra].estado = 'q' + (this.countQ).toString();
-          } else {
-            console.log("Tamanho -> " + this.dicionario.length)
-            let novoEstado = this.criarNovoEstado();
-            novoEstado[letra].estado = 'q' + (this.countQ).toString();
-            this.dicionario.push(novoEstado);
-          }
-          //verifica se a letra tem um Q
-          //sim -> ve para onde aponta e vai la
-          //não -> adiciona Q
-          /*if (this.QExiste(index, letra)) {
-            //auxEstadoQ = this.QExiste(index, letra);
-            console.log("Todo FUdido" + index)
-          } else {
-            
-            console.log("NAO TEM PORRA NENHUMA")
-          }*/
+    palavra.forEach((letra, index) => {
+      this.countQ+=1;
+      if (this.estadoExiste(index)) {
+        if (index == 0) {
+          //console.log((this.dicionario.length) + ' letra -> ' + letra +  ' -> index' + index + ' ->' + this.countQ)
+          this.dicionario[index][letra].estado = 'q' + (this.countQ).toString();
         } else {
-          //dicionario length menor que a palavra
+          //console.log("Tamanho -> " + this.dicionario.length)
           let novoEstado = this.criarNovoEstado();
           novoEstado[letra].estado = 'q' + (this.countQ).toString();
           this.dicionario.push(novoEstado);
         }
-      });
-      //Adiciona um estado final apos a inserção de cada palavra
-      this.addEstadoFinal(this.countQ);
-      
-    /*if (!this.dicionario.length) {
-      var palavra = palavra.split('');
-      palavra.forEach((letra, index) => {
-        let estado = this.criarNovoEstado();
-        estado[letra].estado = 'q' + (index+1).toString();
-        this.dicionario.push(estado);
-      });
-    } else {
-      //Verificar os estado existente e alterar 
-      //senao, adicionar um novo estado
-      var palavra = palavra.split('');
-      palavra.forEach((letra, index) => {
-        if (this.estadoJaExiste(index)) {
-          let estado = this.criarNovoEstado();
-          estado[letra].estado = 'q' + (index+1).toString();
-          this.dicionario.push(estado);
-        } else {
-          this.dicionario[index][letra].estado = 'q' + (index+1).toString();
-        }
-      });
-    }*/
+      } else {
+        //dicionario length menor que a palavra
+        let novoEstado = this.criarNovoEstado();
+        novoEstado[letra].estado = 'q' + (this.countQ).toString();
+        this.dicionario.push(novoEstado);
+      }
+    });
+    this.addEstadoFinal(this.countQ);
   }
 
   addWithEnter(event) {
@@ -209,6 +187,32 @@ export class AppComponent {
     return verificadorObj;
   }
 
+  alertBootStrap() {
+    this.exibirMsg = true
+    setTimeout(() => {  
+      this.exibirMsg = false;
+    },1000)
+  }
+
+  alert(msgCustom, msgColor) {
+    this.msgCustom = msgCustom;
+    
+    if (msgColor=="green") { 
+      this.msgClass = "alert alert-success";
+    } else if (msgColor=="yellow") { 
+      this.msgClass = "alert alert-warning";
+    } else {
+      this.msgClass = "alert alert-danger";
+    }
+
+    this.exibirMsgCustom = true
+    setTimeout(() => {  
+      this.exibirMsgCustom = false;
+      this.msgCustom = '';
+      this.msgClass = '';
+    },1000)
+  }
+
   verificarAutomato(atualQ, letra) {
     this.setColorTable(atualQ, letra);
     var direcionarPara = this.dicionario[atualQ][letra].estado;
@@ -217,58 +221,106 @@ export class AppComponent {
     estadoVerificado.letra = letra;
     estadoVerificado.proximo = direcionarPara;
     this.automatoVerificado.push(estadoVerificado);
-    if (direcionarPara) return true;
-    else return false;
+    if (direcionarPara) this.palavraCorreta = true;
+    else this.palavraCorreta = false;
+  }
+
+  reverseVerify() {
+    var auxPalavra = "";
+    this.automatoVerificado.forEach((estado, idx) => {
+      auxPalavra+=estado.letra
+      if (auxPalavra == this.formDados.get('verifyWord').value) {
+        this.palavraCorreta = true; 
+        console.log('Reverse OK')
+      }
+      else this.palavraCorreta = false;
+    })
+    /*var ultimoEstado = this.automatoVerificado[this.automatoVerificado.length-2]
+    console.log(ultimoEstado)
+    this.revemoStyle();*/
+    //this.setColorTable(ultimoEstado.proximo, ultimoEstado.letra);
+  }
+
+  revemoStyle() {
+      var atual = this.automatoVerificado[this.automatoVerificado.length-1].atual
+      var index = atual.substring(1, atual.length)-1
+      var letraAnterior = this.automatoVerificado[this.automatoVerificado.length-2].letra
+      
+      this.dicionario.forEach((estado) => {
+        this.headerTable.forEach((letra) => {
+          var aux = letra.substring(0,1).toLowerCase()
+          if(aux!='#') {
+            console.log(aux)
+            estado[aux]['cor'] = ''
+          }
+        })
+      })
+  
+  }
+
+  verifyIntegridade() { //returna true de estado eh final
+    var isIntegro = true;
+    var ultimaLetra = this.automatoVerificado[this.automatoVerificado.length-1].letra
+    var proximoEstado = this.automatoVerificado[this.automatoVerificado.length-1].proximo
+    var idx = proximoEstado.substring(1, proximoEstado.length)
+    return this.dicionario[idx].isFinal;
+  }
+
+  limparCampoVerify() {
+    this.palavraCorreta = true;
+    this.automatoVerificado = []
+    //this.formDados.controls['verifyWord'] = '';
+    this.formDados.reset('');
   }
 
   onKeydown(event) { //verificar a palavra
+    //this.revemoStyle();
     if (event.key === "Backspace") {
       if(this.formDados.get('verifyWord').value) {
-        //console.log("APAGAR ARRAY")
-        this.auxPalavra = []
+        this.reverseVerify();
+        //this.auxPalavra = []
       } else {
         this.auxPalavra.pop();
       }
       this.automatoVerificado.pop();
-    } else if (event.key >= 'a' && event.key <= 'z') {
-      this.auxPalavra.push(event.key);
-      //console.log('atual -> ' + (this.auxPalavra.length-1) + ' - letra -> ' + event.key)
-      if(this.palavraCorreta) {
-
+    } 
+    if (event.key == " ") { 
+      this.alert('Espaço não eh permitido!', 'red');
+      this.limparCampoVerify();
+    } else if (event.key === "Enter") { // OK
+      if (this.verifyIntegridade()) {
+        this.alert('Palavra válida', 'green');
       } else {
-
+        this.alert('Palavra inválida', 'red');
       }
+      this.revemoStyle();
+      this.limparCampoVerify();
+    } else {
+      console.log("DIgitou algo")
+      this.auxPalavra.push(event.key);
       if (!this.automatoVerificado.length) {
-        if (this.verificarAutomato(0, event.key)) {
-          this.inputColor = '#0bb70b';
-        } else {
-          this.inputColor = '#FF0000';
-        }
+        this.verificarAutomato(0, event.key);
       } else {
         var proximoEstado = this.automatoVerificado[this.automatoVerificado.length-1].proximo
         var novoIndex = proximoEstado.substring(1, proximoEstado.length)
-        console.log('Novo index -> ' + novoIndex);
+        //console.log('ProximoEstado -> ' + proximoEstado + 'Novo index -> ' + novoIndex);
         if (novoIndex) {
-          if (this.verificarAutomato(novoIndex, event.key)) {
-            this.inputColor = '#0bb70b';
-          } else {
-            this.inputColor = '#FF0000';
-          }
+          this.verificarAutomato(novoIndex, event.key)
         } else { 
+          //console.log('SEM index -> ' + novoIndex);
           if (this.automatoVerificado[novoIndex].proximo == '-') {
             this.inputColor = '#FF0000';
             this.automatoVerificado.push(this.criarEstadoVerificado());
           }
         }
       }
-      //var proximo = this.proximoEstado(this.auxPalavra.length-1, event.key);
-      //if (!proximo) console.log('Palavra não existente!', !proximo)
-    } else if (event.key >= ' '){
-      this.verificarAutomato(this.auxPalavra.length, event.key)
+    } 
+    //this.revemoStyle();
+    if (this.palavraCorreta) {
+      this.inputColor = '#0bb70b';
+    } else {
+      this.inputColor = '#FF0000';
     }
-    
-    //console.log(this.auxPalavra)
-    console.log(this.automatoVerificado)
   }
 
   setColorTable(estadoAtual, letra) { 
@@ -283,7 +335,7 @@ export class AppComponent {
       var novoEstado = this.dicionario[estadoAtual][letra].estado;
       if (novoEstado) {
         this.setColorTable(estadoAtual, letra);
-        console.log('setColor -> row: ' + estadoAtual + ' - col: ' + (this.headerTable.findIndex((item) => {return (item.replace(' ', '')==letra.toUpperCase())})));
+        //console.log('setColor -> row: ' + estadoAtual + ' - col: ' + (this.headerTable.findIndex((item) => {return (item.replace(' ', '')==letra.toUpperCase())})));
       }
     }
     return novoEstado;
