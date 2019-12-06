@@ -10,10 +10,12 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class AppComponent {
   title = 'app-automato';
 
+  private inputColor = "";
   private auxPalavra = [];
   private formDados: FormGroup;
   private palavras = [];
   private dicionario = [];
+  private automatoVerificado = [];
   private headerTable = [
   '# ','A ','B ','C ','D ','E ','F ',
   'G ','H ','I ','J ','K ','L ','M ',
@@ -24,6 +26,7 @@ export class AppComponent {
   private auxColorEstadoAnterior;
   private auxColorLetraAnterior;
   private countQ = 0;
+  private palavraCorreta;
 
   constructor(private formBuilder: FormBuilder) {
     this.formDados = this.formBuilder.group({
@@ -76,7 +79,7 @@ export class AppComponent {
 
   temNumeros(palavra): any {
     var regExp = /[0-9]/g;
-    var result = palavra.match(regExp);
+    var result = palavra.match(regExp); 
     if (result) { //tem numero
       return true;
     } 
@@ -191,14 +194,81 @@ export class AppComponent {
     }*/
   }
 
-  onKeydown(event) {
-    if (event.key === "Backspace") {
-      this.auxPalavra.pop();
-    } else if (event.key >= 'a' && event.key <= 'z'){
-      this.auxPalavra.push(event.key);
-      var proximo = this.proximoEstado(this.auxPalavra.length-1, event.key);
-      if (!proximo) console.log('Palavra não existente!', !proximo)
+  addWithEnter(event) {
+    if (event.key === "Enter") {
+      this.adicionarPalavra();
     }
+  }
+
+  criarEstadoVerificado() {
+    let verificadorObj = {
+      'atual': '',
+      'letra': '',
+      'proximo': ''
+    }
+    return verificadorObj;
+  }
+
+  verificarAutomato(atualQ, letra) {
+    this.setColorTable(atualQ, letra);
+    var direcionarPara = this.dicionario[atualQ][letra].estado;
+    let estadoVerificado = this.criarEstadoVerificado();
+    estadoVerificado.atual = 'q' + atualQ.toString();
+    estadoVerificado.letra = letra;
+    estadoVerificado.proximo = direcionarPara;
+    this.automatoVerificado.push(estadoVerificado);
+    if (direcionarPara) return true;
+    else return false;
+  }
+
+  onKeydown(event) { //verificar a palavra
+    if (event.key === "Backspace") {
+      if(this.formDados.get('verifyWord').value) {
+        //console.log("APAGAR ARRAY")
+        this.auxPalavra = []
+      } else {
+        this.auxPalavra.pop();
+      }
+      this.automatoVerificado.pop();
+    } else if (event.key >= 'a' && event.key <= 'z') {
+      this.auxPalavra.push(event.key);
+      //console.log('atual -> ' + (this.auxPalavra.length-1) + ' - letra -> ' + event.key)
+      if(this.palavraCorreta) {
+
+      } else {
+
+      }
+      if (!this.automatoVerificado.length) {
+        if (this.verificarAutomato(0, event.key)) {
+          this.inputColor = '#0bb70b';
+        } else {
+          this.inputColor = '#FF0000';
+        }
+      } else {
+        var proximoEstado = this.automatoVerificado[this.automatoVerificado.length-1].proximo
+        var novoIndex = proximoEstado.substring(1, proximoEstado.length)
+        console.log('Novo index -> ' + novoIndex);
+        if (novoIndex) {
+          if (this.verificarAutomato(novoIndex, event.key)) {
+            this.inputColor = '#0bb70b';
+          } else {
+            this.inputColor = '#FF0000';
+          }
+        } else { 
+          if (this.automatoVerificado[novoIndex].proximo == '-') {
+            this.inputColor = '#FF0000';
+            this.automatoVerificado.push(this.criarEstadoVerificado());
+          }
+        }
+      }
+      //var proximo = this.proximoEstado(this.auxPalavra.length-1, event.key);
+      //if (!proximo) console.log('Palavra não existente!', !proximo)
+    } else if (event.key >= ' '){
+      this.verificarAutomato(this.auxPalavra.length, event.key)
+    }
+    
+    //console.log(this.auxPalavra)
+    console.log(this.automatoVerificado)
   }
 
   setColorTable(estadoAtual, letra) { 
@@ -215,15 +285,7 @@ export class AppComponent {
         this.setColorTable(estadoAtual, letra);
         console.log('setColor -> row: ' + estadoAtual + ' - col: ' + (this.headerTable.findIndex((item) => {return (item.replace(' ', '')==letra.toUpperCase())})));
       }
-      
     }
     return novoEstado;
   }
-
-  teste() {
-   
-    //var line = 4;
-    //this.testeClass = "{'font-size.px': 24}";//`tr:nth-child(${line}){background-color: red;}`;
-  }
-
 }

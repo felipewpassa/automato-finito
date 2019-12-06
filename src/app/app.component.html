@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <form [formGroup]="formDados">
     <div class="input-group mb-3">
-      <input type="text" class="form-control" formControlName="addWord" placeholder="Digite uma palavra" spellcheck="false">
+      <input type="text" class="form-control" formControlName="addWord" placeholder="Digite uma palavra" spellcheck="false" (keydown)="addWithEnter($event)">
       <div class="input-group-append">
         <button class="btn btn-outline-primary" type="button" (click)="adicionarPalavra()">Adicionar</button>
       </div>
@@ -10,8 +10,8 @@
       <label>Dicionário:&nbsp;</label>
       <label *ngFor="let palavra of palavras; let i=index">{{!i ? palavra : ',&nbsp;' + palavra}}</label>
     </div>
-    <div class="input-group mb-3">
-      <input type="text" class="form-control" (keydown)="onKeydown($event)" formControlName="verifyWord" placeholder="Verificar" spellcheck="false">
+    <div class="input-group mb-3" *ngIf="this.dicionario.length">
+      <input type="text" class="form-control input-mask" [style.color]=inputColor (keydown)="onKeydown($event)" formControlName="verifyWord" placeholder="Verificar" spellcheck="false">
     </div>
   </form>
 
