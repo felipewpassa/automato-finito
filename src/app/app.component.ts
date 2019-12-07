@@ -379,10 +379,35 @@ export class AppComponent {
       //console.log('2 - ' + this.auxPalavra)
 
     } else if (codeLetraDigitada == 8) { // backspace
-      //console.log('3 - ' + this.auxPalavra)
-      if(this.formDados.get('verifyWord').value.length-1) {
+
+      if(this.formDados.get('verifyWord').value.length) {
+        var letraAtual;
+        var index;
+        if (this.automatoVerificado.length>1){
+          letraAtual = this.auxPalavra[this.auxPalavra.length-2]
+        
+          var atual = this.automatoVerificado[this.automatoVerificado.length-1].atual
+          var indexAnterior = atual.substring(1, atual.length)
+          var letraAnterior = this.automatoVerificado[this.automatoVerificado.length-1].letra
+        
+          var anterior = this.automatoVerificado[this.automatoVerificado.length-2].atual
+          var index = anterior.substring(1, anterior.length)
+
+          this.setColorTableBackSpace(indexAnterior, letraAnterior, index, letraAtual);
+        }
+        if (this.automatoVerificado.length==1) {
+          var atual = this.automatoVerificado[this.automatoVerificado.length-1].atual
+          var indexAnterior = atual.substring(1, atual.length)
+          var letraAnterior = this.automatoVerificado[this.automatoVerificado.length-1].letra
+          console.log('ANT -> ' + indexAnterior + ' - ' + letraAnterior)
+          //console.log('atual -> ' + index + ' - ' + letraAtual)
+          //this.dicionario[index][letraAtual].cor = 'item-selected';
+          this.dicionario[indexAnterior][letraAnterior].cor = '';
+        }
+        
         this.reverseVerify();
         this.auxPalavra.pop();
+        
       } else {
         this.auxPalavra.length = 0;
         this.automatoVerificado = [];
@@ -451,35 +476,30 @@ export class AppComponent {
     }
   }
 
-  setColorTable(estadoAtual, letra) { 
-
+  setColorTable(estadoAtual, letra) {
+    //console.log(estadoAtual + ' - ' + letra)
     if (this.automatoVerificado.length) {
       var atual = this.automatoVerificado[this.automatoVerificado.length-1].atual
       var index = atual.substring(1, atual.length)
       var letraAnterior = this.automatoVerificado[this.automatoVerificado.length-1].letra
-      console.log('atual' + atual)
-      console.log('index' + index)
-      console.log('letraAnterior' + letraAnterior)
+      //console.log('atual' + atual)
+      //console.log('index' + index)
+      //console.log('letraAnterior' + letraAnterior)
       this.dicionario[index][letraAnterior].cor = '';
     }
-    
-    /*this.dicionario.forEach((estado) => {
-      this.headerTable.forEach((letra) => {
-        var aux = letra.substring(0,1).toLowerCase()
-        if(aux!='#') {
-          this.dicionario[estadoAtual][letra].cor = '';
-        }
-      })
-    })*/
-
-    
     this.dicionario[estadoAtual][letra].cor = 'item-selected';
+  }
 
-  
-    
-    ///console.log('verificado -> ' + this.automatoVerificado);
-    //console.log('atual -> ' + estadoAtual + ' - ' + letra);
-    //this.dicionario[estadoAtual]['cor'] = "line-selected";
+  setColorTableBackSpace(indexAnterior, letraAnterior, index, letra) {
+    //console.log('ANT -> ' + indexAnterior + ' - ' + letraAnterior)
+    //console.log('atual -> ' + index + ' - ' + letra)
+    this.dicionario[indexAnterior][letraAnterior].cor = '';
+    this.dicionario[index][letra].cor = 'item-selected';
+    //console.log("LEN - > " + this.automatoVerificado.length)
+  }
+
+  setColorEnd(index, letra) {
+    this.dicionario[index][index].cor = '';
   }
 
 }
