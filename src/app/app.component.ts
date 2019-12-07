@@ -293,19 +293,18 @@ export class AppComponent {
   }
 
   removeStyle() {
-      var atual = this.automatoVerificado[this.automatoVerificado.length-1].atual
-      var index = atual.substring(1, atual.length)-1
-      var letraAnterior = this.automatoVerificado[this.automatoVerificado.length-2].letra
-      
-      this.dicionario.forEach((estado) => {
-        this.headerTable.forEach((letra) => {
-          var aux = letra.substring(0,1).toLowerCase()
-          if(aux!='#') {
-            estado[aux]['cor'] = ''
-          }
-        })
+    var atual = this.automatoVerificado[this.automatoVerificado.length-1].atual
+    var index = atual.substring(1, atual.length)-1
+    var letraAnterior = this.automatoVerificado[this.automatoVerificado.length-2].letra
+    
+    this.dicionario.forEach((estado) => {
+      this.headerTable.forEach((letra) => {
+        var aux = letra.substring(0,1).toLowerCase()
+        if(aux!='#') {
+          estado[aux]['cor'] = ''
+        }
       })
-  
+    })
   }
 
   verifyIntegridade() { // OK
