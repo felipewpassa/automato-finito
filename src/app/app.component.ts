@@ -139,9 +139,9 @@ export class AppComponent {
   }
 
   addEstadoFinal(index, palavra) {
-    console.log(palavra)
+    //console.log(palavra)
     var letraQuePontaParaFinal = palavra[palavra.length-1]
-    console.log('&&&&Create final ' + index + ' - ' + letraQuePontaParaFinal)
+    //console.log('&&&&Create final ' + index + ' - ' + letraQuePontaParaFinal)
     this.dicionario[index-1][letraQuePontaParaFinal].isFinal = true;
     let novoEstado = this.criarNovoEstado();
     novoEstado.isFinal=true;
@@ -156,7 +156,7 @@ export class AppComponent {
     var novo = true;
     var auxPalavra = palavra.split('');
     auxPalavra.forEach((letra, index) => {
-      console.log(letra + ' - ' + index)
+      //console.log(letra + ' - ' + index)
       if (!this.dicionario.length) { // Dicionario vazio add primeiro item
         this.countQ+=1;
         let novoEstado = this.criarNovoEstado();
@@ -253,10 +253,10 @@ export class AppComponent {
     this.setColorTable(atualQ, letra);
     
     if (this.dicionario[atualQ]) {
-      console.log(this.dicionario[atualQ])
+      //console.log(this.dicionario[atualQ])
 
       var direcionarPara = this.dicionario[atualQ][letra].estado;
-      console.log('direct - ' + direcionarPara + ' - ' + this.isLetraFinal())
+      //console.log('direct - ' + direcionarPara + ' - ' + this.isLetraFinal() +' - '+ letra)
       let estadoVerificado = this.criarEstadoVerificado();
       estadoVerificado.atual = 'q' + atualQ.toString();
       estadoVerificado.letra = letra;
@@ -286,8 +286,8 @@ export class AppComponent {
     })
     console.log('Reverse: -> ' + this.palavraCorreta)
     //console.log(this.automatoVerificado)
-    /*var ultimoEstado = this.automatoVerificado[this.automatoVerificado.length-2]
-    console.log(ultimoEstado)
+    //var ultimoEstado = this.automatoVerificado[this.automatoVerificado.length-2]
+    /*console.log(ultimoEstado)
     this.revemoStyle();*/
     //this.setColorTable(ultimoEstado.proximo, ultimoEstado.letra);
   }
@@ -366,7 +366,7 @@ export class AppComponent {
           this.verificarAutomato(novoIndex, event.key)
         } else {
 
-          console.log("################")
+          //console.log("################")
           this.automatoVerificado.push(this.criarEstadoVerificado());
           //console.log('SEM index -> ' + novoIndex);
           //if (this.automatoVerificado[novoIndex].proximo == '-') {
@@ -452,9 +452,33 @@ export class AppComponent {
   }
 
   setColorTable(estadoAtual, letra) { 
+
+    if (this.automatoVerificado.length) {
+      var atual = this.automatoVerificado[this.automatoVerificado.length-1].atual
+      var index = atual.substring(1, atual.length)
+      var letraAnterior = this.automatoVerificado[this.automatoVerificado.length-1].letra
+      console.log('atual' + atual)
+      console.log('index' + index)
+      console.log('letraAnterior' + letraAnterior)
+      this.dicionario[index][letraAnterior].cor = '';
+    }
+    
+    /*this.dicionario.forEach((estado) => {
+      this.headerTable.forEach((letra) => {
+        var aux = letra.substring(0,1).toLowerCase()
+        if(aux!='#') {
+          this.dicionario[estadoAtual][letra].cor = '';
+        }
+      })
+    })*/
+
+    
     this.dicionario[estadoAtual][letra].cor = 'item-selected';
-    this.auxColorEstadoAnterior = estadoAtual;
-    this.auxColorLetraAnterior = letra;
+
+  
+    
+    ///console.log('verificado -> ' + this.automatoVerificado);
+    //console.log('atual -> ' + estadoAtual + ' - ' + letra);
     //this.dicionario[estadoAtual]['cor'] = "line-selected";
   }
 
