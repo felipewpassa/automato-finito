@@ -70,7 +70,7 @@ export class AppComponent {
       'x': {'estado': '', 'cor': '', 'isFinal': false},
       'y': {'estado': '', 'cor': '', 'isFinal': false},
       'z': {'estado': '', 'cor': '', 'isFinal': false}, 
-      //'isFinal': false
+      'isFinal': false
     }
     return estado;
   }
@@ -144,7 +144,7 @@ export class AppComponent {
     console.log('&&&&Create final ' + index + ' - ' + letraQuePontaParaFinal)
     this.dicionario[index-1][letraQuePontaParaFinal].isFinal = true;
     let novoEstado = this.criarNovoEstado();
-    //novoEstado.isFinal=true;
+    novoEstado.isFinal=true;
     this.dicionario.push(novoEstado);
     for(var i='a'.charCodeAt(0); i<='z'.charCodeAt(0); i++) {
       this.dicionario[index][String.fromCharCode(i)].estado = '--';
@@ -292,7 +292,7 @@ export class AppComponent {
     //this.setColorTable(ultimoEstado.proximo, ultimoEstado.letra);
   }
 
-  revemoStyle() {
+  removeStyle() {
       var atual = this.automatoVerificado[this.automatoVerificado.length-1].atual
       var index = atual.substring(1, atual.length)-1
       var letraAnterior = this.automatoVerificado[this.automatoVerificado.length-2].letra
@@ -301,7 +301,6 @@ export class AppComponent {
         this.headerTable.forEach((letra) => {
           var aux = letra.substring(0,1).toLowerCase()
           if(aux!='#') {
-            console.log(aux)
             estado[aux]['cor'] = ''
           }
         })
@@ -344,7 +343,7 @@ export class AppComponent {
     return estadoFinal;
   }
 
-  onKeydown(event) { 
+  onKeydown(event) {
     //code 8  - Backspace
     //code 13 - Enter
     //code 32 - Space
@@ -393,11 +392,11 @@ export class AppComponent {
       //console.log('4 - ' + this.auxPalavra)
     } else if (codeLetraDigitada == 13 || codeLetraDigitada == 32) {
       if (this.palavraCorreta) {
-        //this.revemoStyle();
+        this.removeStyle();
         this.limparCampoVerify();
         this.alert('Palavra válida', 'green');
       } else {
-        //this.revemoStyle();
+        this.removeStyle();
         this.limparCampoVerify();
         this.alert('Palavra inválida', 'red');
       }
@@ -446,7 +445,6 @@ export class AppComponent {
         }*/
       //}
     //} 
-    //this.revemoStyle();
     if (this.palavraCorreta) {
       this.inputColor = '#0bb70b';
     } else {
