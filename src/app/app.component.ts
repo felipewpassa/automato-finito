@@ -250,7 +250,6 @@ export class AppComponent {
   }
 
   verificarAutomato(atualQ, letra) {
-    this.setColorTable(atualQ, letra);
     
     if (this.dicionario[atualQ]) {
       //console.log(this.dicionario[atualQ])
@@ -271,6 +270,7 @@ export class AppComponent {
     } else {
       this.palavraCorreta = false;
     }
+    if (this.palavraCorreta) this.setColorTable(atualQ, letra);
   }
 
   reverseVerify(): void {
@@ -393,7 +393,7 @@ export class AppComponent {
           var anterior = this.automatoVerificado[this.automatoVerificado.length-2].atual
           var index = anterior.substring(1, anterior.length)
 
-          this.setColorTableBackSpace(indexAnterior, letraAnterior, index, letraAtual);
+          if (this.palavraCorreta) this.setColorTableBackSpace(indexAnterior, letraAnterior, index, letraAtual);
         }
         if (this.automatoVerificado.length==1) {
           var atual = this.automatoVerificado[this.automatoVerificado.length-1].atual
