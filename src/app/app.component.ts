@@ -143,7 +143,7 @@ export class AppComponent {
     novoEstado.isFinal=true;
     this.dicionario.push(novoEstado);
     for(var i='a'.charCodeAt(0); i<='z'.charCodeAt(0); i++) {
-      this.dicionario[index][String.fromCharCode(i)].estado = '-';
+      this.dicionario[index][String.fromCharCode(i)].estado = '--';
     }
   }
 
@@ -214,7 +214,7 @@ export class AppComponent {
   }
 
   verificarAutomato(atualQ, letra) {
-    this.setColorTable(atualQ, letra);
+    //this.setColorTable(atualQ, letra);
     var direcionarPara = this.dicionario[atualQ][letra].estado;
     let estadoVerificado = this.criarEstadoVerificado();
     estadoVerificado.atual = 'q' + atualQ.toString();
@@ -225,16 +225,19 @@ export class AppComponent {
     else this.palavraCorreta = false;
   }
 
-  reverseVerify() {
+  reverseVerify(): void {
     var auxPalavra = "";
     this.automatoVerificado.forEach((estado, idx) => {
       auxPalavra+=estado.letra
+      //console.log(auxPalavra + '-'+ this.formDados.get('verifyWord').value)
       if (auxPalavra == this.formDados.get('verifyWord').value) {
         this.palavraCorreta = true; 
-        console.log('Reverse OK')
+      } else {
+        this.palavraCorreta = false;
       }
-      else this.palavraCorreta = false;
     })
+    console.log('Reverse: -> ' + this.palavraCorreta)
+    //console.log(this.automatoVerificado)
     /*var ultimoEstado = this.automatoVerificado[this.automatoVerificado.length-2]
     console.log(ultimoEstado)
     this.revemoStyle();*/
@@ -258,53 +261,120 @@ export class AppComponent {
   
   }
 
-  verifyIntegridade() { //returna true de estado eh final
-    var isIntegro = true;
-    var ultimaLetra = this.automatoVerificado[this.automatoVerificado.length-1].letra
-    var proximoEstado = this.automatoVerificado[this.automatoVerificado.length-1].proximo
+  verifyIntegridade() { // OK
+    var isFinal = false;
+    var proximoEstado = this.automatoVerificado[this.automatoVerificado.length-1].proximo //q6 para 'felipe'
     var idx = proximoEstado.substring(1, proximoEstado.length)
-    return this.dicionario[idx].isFinal;
+    //console.log('idx -> ' +  idx)
+    //console.log(this.dicionario[idx])
+    if (this.palavraCorreta) {
+      if (this.dicionario[idx].isFinal) {
+        isFinal = true;
+      }
+    }
+    //console.log('Is Final: ' + isFinal);
+    return isFinal
   }
 
   limparCampoVerify() {
     this.palavraCorreta = true;
     this.automatoVerificado = []
-    //this.formDados.controls['verifyWord'] = '';
-    this.formDados.reset('');
+    this.formDados.reset();
   }
 
-  onKeydown(event) { //verificar a palavra
-    //this.revemoStyle();
-    if (event.key === "Backspace") {
-      if(this.formDados.get('verifyWord').value) {
-        this.reverseVerify();
-        //this.auxPalavra = []
+  onKeydown(event) { 
+    //code 8  - Backspace
+    //code 13 - Enter
+    //code 32 - Space
+    var codeLetraDigitada = event.keyCode;
+    var letraDigitada = '';
+    //console.log('1 - ' + this.auxPalavra)
+    if (codeLetraDigitada>=65 && codeLetraDigitada<=90) { //eh uma letra
+      letraDigitada = event.key.toLowerCase();
+      this.auxPalavra.push(event.key);
+
+      if (!this.automatoVerificado.length) {
+        this.verificarAutomato(0, event.key);
       } else {
+
+
+        var proximoEstado = this.automatoVerificado[this.automatoVerificado.length-1].proximo
+        var novoIndex = proximoEstado.substring(1, proximoEstado.length)
+        //console.log('size' + proximoEstado.length+ 'ProximoEstado -> ' + proximoEstado + 'Novo index -> ' + novoIndex);
+        
+        if (novoIndex) {
+          this.verificarAutomato(novoIndex, event.key)
+          //console.log("novo index")
+        } else {
+          //console.log("novo vazio")
+          this.automatoVerificado.push(this.criarEstadoVerificado());
+          //console.log('SEM index -> ' + novoIndex);
+          //if (this.automatoVerificado[novoIndex].proximo == '-') {
+            //console.log(' igual [--] -> ' + novoIndex);
+            //this.inputColor = '#FF0000';
+            //this.automatoVerificado.push(this.criarEstadoVerificado());
+          //}
+        }
+
+      }
+      //console.log('2 - ' + this.auxPalavra)
+
+    } else if (codeLetraDigitada == 8) { // backspace
+      //console.log('3 - ' + this.auxPalavra)
+      if(this.formDados.get('verifyWord').value.length-1) {
+        this.reverseVerify();
         this.auxPalavra.pop();
+      } else {
+        this.auxPalavra.length = 0;
+        this.automatoVerificado = [];
       }
       this.automatoVerificado.pop();
-    } 
-    if (event.key == " ") { 
+      //console.log('4 - ' + this.auxPalavra)
+    } else if (codeLetraDigitada == 13 || codeLetraDigitada == 32) {
+      if (this.verifyIntegridade() && this.palavraCorreta) {
+        //this.revemoStyle();
+        this.limparCampoVerify();
+        this.alert('Palavra válida', 'green');
+      } else {
+        this.revemoStyle();
+        this.limparCampoVerify();
+        this.alert('Palavra inválida', 'red');
+      }
+
+
+    }
+    /*if (event.key === "Backspace") {
+      if(this.formDados.get('verifyWord').value.length-1) {
+        this.reverseVerify();
+        this.auxPalavra.pop();
+      } else {
+        this.auxPalavra.length = 0;
+        this.automatoVerificado = [];
+      }
+      this.automatoVerificado.pop();
+    /*} else if (event.key == " ") { 
       this.alert('Espaço não eh permitido!', 'red');
       this.limparCampoVerify();
     } else if (event.key === "Enter") { // OK
-      if (this.verifyIntegridade()) {
-        this.alert('Palavra válida', 'green');
+      /*if (this.verifyIntegridade()) {
+        //this.revemoStyle();
+        //this.limparCampoVerify();
+        //this.alert('Palavra válida', 'green');
       } else {
+        this.revemoStyle();
+        this.limparCampoVerify();
         this.alert('Palavra inválida', 'red');
       }
-      this.revemoStyle();
-      this.limparCampoVerify();
     } else {
-      console.log("DIgitou algo")
       this.auxPalavra.push(event.key);
       if (!this.automatoVerificado.length) {
         this.verificarAutomato(0, event.key);
       } else {
         var proximoEstado = this.automatoVerificado[this.automatoVerificado.length-1].proximo
         var novoIndex = proximoEstado.substring(1, proximoEstado.length)
-        //console.log('ProximoEstado -> ' + proximoEstado + 'Novo index -> ' + novoIndex);
-        if (novoIndex) {
+        
+        console.log('ProximoEstado -> ' + proximoEstado + 'Novo index -> ' + novoIndex);
+        /*if (novoIndex) {
           this.verificarAutomato(novoIndex, event.key)
         } else { 
           //console.log('SEM index -> ' + novoIndex);
@@ -312,9 +382,9 @@ export class AppComponent {
             this.inputColor = '#FF0000';
             this.automatoVerificado.push(this.criarEstadoVerificado());
           }
-        }
-      }
-    } 
+        }*/
+      //}
+    //} 
     //this.revemoStyle();
     if (this.palavraCorreta) {
       this.inputColor = '#0bb70b';
