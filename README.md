@@ -1,6 +1,6 @@
 # AppAutomato
 
-Para executar esse projeto é necessário ter o [NodeJS v12.13.0](https://nodejs.org/dist/v12.13.0/) ou superior [NodeJS](https://nodejs.org/) instalado na máquina.
+Para executar esse projeto é necessário ter o [NodeJS v14.21.3](https://nodejs.org/dist/v14.21.3/) ou superior [NodeJS](https://nodejs.org/) instalado na máquina.
 
 Com o node instalado deve-se instalar o [Angular CLI](https://cli.angular.io/)
     Para instalar o angular, acesse o prompt de comando ou terminal e digite: 
